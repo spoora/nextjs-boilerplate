@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,20 +18,26 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
   // Extract unique orbit types from data
   const orbitTypes = Array.from(new Set(data.map((item) => item["Orbit Type"] || "").filter(Boolean)))
 
-  // Apply filters whenever filter values change
-  useEffect(() => {
+  // Apply filters when filter values change
+  // Using useCallback to memoize the filter function
+  const applyFilters = useCallback(() => {
     const filteredData = data.filter((item) => {
       const operatorMatch =
         !operatorSearch ||
         (item["Satellite Operator"] && item["Satellite Operator"].toLowerCase().includes(operatorSearch.toLowerCase()))
 
-      const orbitMatch = !orbitType || item["Orbit Type"] === orbitType
+      const orbitMatch = !orbitType || orbitType === "all" || item["Orbit Type"] === orbitType
 
       return operatorMatch && orbitMatch
     })
 
     onFilterChange(filteredData)
   }, [data, operatorSearch, orbitType, onFilterChange])
+
+  // Only run the filter when the filter values change
+  useEffect(() => {
+    applyFilters()
+  }, [applyFilters])
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-end">

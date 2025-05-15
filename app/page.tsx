@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { createClient } from "@supabase/supabase-js"
 import { Loader2, Download, RefreshCw } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Fetch data on component mount
   useEffect(() => {
     fetchData()
   }, [])
@@ -51,15 +52,18 @@ export default function DashboardPage() {
           const { data: tableData, error: dataError } = await supabase.from(firstTable).select("*")
 
           if (dataError) throw new Error(`Error fetching from ${firstTable}: ${dataError.message}`)
-          setData(tableData || [])
-          setFilteredData(tableData || [])
+
+          const fetchedData = tableData || []
+          setData(fetchedData)
+          setFilteredData(fetchedData)
         } else {
           throw new Error("No tables found in the database")
         }
       } else {
         // If Geosatable exists, use it
-        setData(tableData || [])
-        setFilteredData(tableData || [])
+        const fetchedData = tableData || []
+        setData(fetchedData)
+        setFilteredData(fetchedData)
       }
     } catch (err: any) {
       console.error("Error:", err)
@@ -69,10 +73,10 @@ export default function DashboardPage() {
     }
   }
 
-  // Function to handle filter changes
-  const handleFilterChange = (newFilteredData: any[]) => {
+  // Memoize the filter change handler to prevent recreation on each render
+  const handleFilterChange = useCallback((newFilteredData: any[]) => {
     setFilteredData(newFilteredData)
-  }
+  }, [])
 
   // Function to export data as CSV
   const exportToCSV = () => {
@@ -168,6 +172,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <>
+            {/* Only render filters if we have data */}
             <SatelliteFilters data={data} onFilterChange={handleFilterChange} />
 
             <div className="mt-4 border rounded-lg overflow-hidden">
