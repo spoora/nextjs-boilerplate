@@ -1,32 +1,69 @@
--- Create the satellites table
-CREATE TABLE satellites (
+-- Check if the table exists and create it if it doesn't
+CREATE TABLE IF NOT EXISTS "Geosatable" (
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  operator TEXT NOT NULL,
-  launch_date DATE NOT NULL,
-  geo_orbit_date DATE,
-  inclination NUMERIC,
-  orbit_type TEXT NOT NULL,
-  longitude NUMERIC,
-  frequency TEXT
+  "Satellite Name" TEXT NOT NULL,
+  "Satellite Operator" TEXT NOT NULL,
+  "Launch date Date" DATE,
+  "Geo orbit Reach Date" DATE,
+  "Status Date" DATE,
+  "Inclination" NUMERIC,
+  "Orbit Type" TEXT,
+  "Longitude" NUMERIC,
+  "Commercial Telecom" TEXT,
+  "Ku Frequency (Yes/No)" TEXT,
+  "C Frequency (Yes/No)" TEXT,
+  "Ka Frequency (Yes/No)" TEXT,
+  "JCAT" TEXT,
+  "Piece" TEXT
 );
 
--- Insert sample data
-INSERT INTO satellites (name, operator, launch_date, geo_orbit_date, inclination, orbit_type, longitude, frequency) VALUES
-('Intelsat 901', 'Intelsat', '2001-06-09', '2001-06-28', 0.02, 'GEO', 27.5, 'Ku/C'),
-('Eutelsat 113 West A', 'Eutelsat', '2006-05-27', '2006-06-14', 0.01, 'GEO', -113.0, 'Ku/C'),
-('SES-1', 'SES', '2010-04-24', '2010-05-18', 0.05, 'GEO', -101.0, 'C/Ka'),
-('Astra 2G', 'SES', '2014-12-27', '2015-01-16', 0.03, 'GEO', 28.2, 'Ku/Ka'),
-('Inmarsat-5 F4', 'Inmarsat', '2017-05-15', '2017-06-01', 3.0, 'GEO', -83.0, 'Ka'),
-('Telstar 19 VANTAGE', 'Telesat', '2018-07-22', '2018-08-10', 0.01, 'GEO', -63.0, 'Ku/Ka'),
-('JCSAT-17', 'SKY Perfect JSAT', '2020-02-18', '2020-03-12', 0.02, 'GEO', 136.0, 'C/Ku/Ka'),
-('Starlink-1', 'SpaceX', '2019-05-24', NULL, 53.0, 'LEO', NULL, 'Ku/Ka'),
-('OneWeb-0012', 'OneWeb', '2020-02-06', NULL, 87.9, 'LEO', NULL, 'Ku'),
-('Iridium-133', 'Iridium Communications', '2018-01-14', NULL, 86.4, 'LEO', NULL, 'L/Ka');
+-- Insert sample data only if the table is empty
+INSERT INTO "Geosatable" (
+  "Satellite Name", 
+  "Satellite Operator", 
+  "Launch date Date", 
+  "Geo orbit Reach Date", 
+  "Orbit Type", 
+  "Longitude", 
+  "Inclination",
+  "Ku Frequency (Yes/No)",
+  "C Frequency (Yes/No)",
+  "Ka Frequency (Yes/No)"
+)
+SELECT 
+  'Intelsat 901', 'Intelsat', '2001-06-09', '2001-06-28', 'GEO', 27.5, 0.02, 'Yes', 'Yes', 'No'
+WHERE NOT EXISTS (SELECT 1 FROM "Geosatable" LIMIT 1);
 
--- Add Row Level Security (RLS) policies
-ALTER TABLE satellites ENABLE ROW LEVEL SECURITY;
+INSERT INTO "Geosatable" (
+  "Satellite Name", 
+  "Satellite Operator", 
+  "Launch date Date", 
+  "Geo orbit Reach Date", 
+  "Orbit Type", 
+  "Longitude", 
+  "Inclination",
+  "Ku Frequency (Yes/No)",
+  "C Frequency (Yes/No)",
+  "Ka Frequency (Yes/No)"
+)
+SELECT 
+  'Eutelsat 113 West A', 'Eutelsat', '2006-05-27', '2006-06-14', 'GEO', -113.0, 0.01, 'Yes', 'Yes', 'No'
+WHERE EXISTS (SELECT 1 FROM "Geosatable" HAVING COUNT(*) < 2);
 
--- Create policy to allow anyone to read satellites data
-CREATE POLICY "Allow public read access" ON satellites
-  FOR SELECT USING (true);
+INSERT INTO "Geosatable" (
+  "Satellite Name", 
+  "Satellite Operator", 
+  "Launch date Date", 
+  "Geo orbit Reach Date", 
+  "Orbit Type", 
+  "Longitude", 
+  "Inclination",
+  "Ku Frequency (Yes/No)",
+  "C Frequency (Yes/No)",
+  "Ka Frequency (Yes/No)"
+)
+SELECT 
+  'SES-1', 'SES', '2010-04-24', '2010-05-18', 'GEO', -101.0, 0.05, 'No', 'Yes', 'Yes'
+WHERE EXISTS (SELECT 1 FROM "Geosatable" HAVING COUNT(*) < 3);
+
+-- Add more sample data as needed

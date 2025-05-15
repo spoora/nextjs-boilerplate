@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
-import { Search, Bell, User } from "lucide-react"
+import { Search, Bell, User, Menu } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -11,9 +12,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 border-b bg-background">
         <div className="flex h-16 items-center px-4 md:px-6">
+          <Button variant="ghost" size="icon" className="md:hidden mr-2">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle menu</span>
+          </Button>
           <div className="font-semibold text-lg mr-4">Satellite Dashboard</div>
           <div className="ml-auto flex items-center gap-4">
-            <form className="relative">
+            <form className="relative hidden md:block">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
@@ -21,14 +26,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[300px]"
               />
             </form>
-            <button className="rounded-full border p-2" type="button">
+            <Button variant="outline" size="icon" className="rounded-full">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
-            </button>
-            <button className="rounded-full border p-2" type="button">
+            </Button>
+            <Button variant="outline" size="icon" className="rounded-full">
               <User className="h-4 w-4" />
               <span className="sr-only">Account</span>
-            </button>
+            </Button>
           </div>
         </div>
       </header>
