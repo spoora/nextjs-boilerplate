@@ -1,6 +1,5 @@
 import type { ReactNode } from "react"
-import { Search, Bell, User, Menu } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { Bell, User, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface DashboardLayoutProps {
@@ -18,14 +17,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </Button>
           <div className="font-semibold text-lg mr-4">Satellite Dashboard</div>
           <div className="ml-auto flex items-center gap-4">
-            <form className="relative hidden md:block">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search satellites..."
-                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[300px]"
-              />
-            </form>
             <Button variant="outline" size="icon" className="rounded-full">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
@@ -37,7 +28,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </header>
-      <main className="flex-1 p-4 md:p-6">{children}</main>
+      <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">{children}</main>
     </div>
   )
 }
