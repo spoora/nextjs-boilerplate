@@ -67,8 +67,9 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
   }, [applyFilters])
 
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:items-end">
-      <div className="flex-1 space-y-2">
+    <div className="space-y-4">
+      {/* Satellite Name Search - Full width on all screens */}
+      <div className="w-full space-y-2">
         <Label htmlFor="name-search">Satellite Name</Label>
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -82,7 +83,8 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
         </div>
       </div>
 
-      <div className="flex-1 space-y-2">
+      {/* Operator Search - Full width on all screens */}
+      <div className="w-full space-y-2">
         <Label htmlFor="operator-search">Satellite Operator</Label>
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -96,7 +98,8 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
         </div>
       </div>
 
-      <div className="w-full md:w-[200px] space-y-2">
+      {/* Orbit Type - Full width on mobile, specific width on desktop */}
+      <div className="w-full space-y-2">
         <Label htmlFor="orbit-type">Orbit Type</Label>
         <Select value={orbitType} onValueChange={setOrbitType}>
           <SelectTrigger id="orbit-type">
@@ -113,27 +116,29 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
         </Select>
       </div>
 
-      {/* Add inclination range filter */}
-      <div className="w-full md:w-[150px] space-y-2">
-        <Label htmlFor="min-inclination">Min Inclination (°)</Label>
-        <Input
-          id="min-inclination"
-          type="number"
-          placeholder="Min"
-          value={minInclination}
-          onChange={(e) => setMinInclination(e.target.value)}
-        />
-      </div>
+      {/* Inclination Range - Two columns on all screens */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="min-inclination">Min Inclination (°)</Label>
+          <Input
+            id="min-inclination"
+            type="number"
+            placeholder="Min"
+            value={minInclination}
+            onChange={(e) => setMinInclination(e.target.value)}
+          />
+        </div>
 
-      <div className="w-full md:w-[150px] space-y-2">
-        <Label htmlFor="max-inclination">Max Inclination (°)</Label>
-        <Input
-          id="max-inclination"
-          type="number"
-          placeholder="Max"
-          value={maxInclination}
-          onChange={(e) => setMaxInclination(e.target.value)}
-        />
+        <div className="space-y-2">
+          <Label htmlFor="max-inclination">Max Inclination (°)</Label>
+          <Input
+            id="max-inclination"
+            type="number"
+            placeholder="Max"
+            value={maxInclination}
+            onChange={(e) => setMaxInclination(e.target.value)}
+          />
+        </div>
       </div>
     </div>
   )

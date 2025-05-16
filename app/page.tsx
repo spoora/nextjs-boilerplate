@@ -117,14 +117,25 @@ export default function DashboardPage() {
     const firstItem = filteredData[0]
     return (
       <tr>
-        {Object.keys(firstItem).map((key) => (
-          <th
-            key={key}
-            className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
-          >
-            {key}
-          </th>
-        ))}
+        {Object.keys(firstItem).map((key) => {
+          // Only show important columns on mobile
+          const isMobileVisible = [
+            "Satellite Name",
+            "name",
+            "Satellite Operator",
+            "operator",
+            "Orbit Type",
+            "orbit_type",
+          ].includes(key)
+          return (
+            <th
+              key={key}
+              className={`px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b ${!isMobileVisible ? "hidden sm:table-cell" : ""}`}
+            >
+              {key}
+            </th>
+          )
+        })}
       </tr>
     )
   }
@@ -133,11 +144,25 @@ export default function DashboardPage() {
   const renderTableRows = () => {
     return filteredData.map((item, index) => (
       <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-        {Object.entries(item).map(([key, value]: [string, any]) => (
-          <td key={key} className="px-4 py-3 whitespace-nowrap text-sm">
-            {value !== null ? String(value) : "N/A"}
-          </td>
-        ))}
+        {Object.entries(item).map(([key, value]: [string, any]) => {
+          // Only show important columns on mobile
+          const isMobileVisible = [
+            "Satellite Name",
+            "name",
+            "Satellite Operator",
+            "operator",
+            "Orbit Type",
+            "orbit_type",
+          ].includes(key)
+          return (
+            <td
+              key={key}
+              className={`px-4 py-3 whitespace-nowrap text-sm ${!isMobileVisible ? "hidden sm:table-cell" : ""}`}
+            >
+              {value !== null ? String(value) : "N/A"}
+            </td>
+          )
+        })}
       </tr>
     ))
   }
@@ -145,14 +170,12 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-2xl font-bold">Satellite Data</h1>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
-              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-              Refresh
-            </Button>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold">Satellite Data</h1>
+          <Button variant="outline" size="sm" onClick={fetchData} disabled={loading} className="self-start">
+            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
         </div>
 
         {loading ? (
@@ -172,7 +195,7 @@ export default function DashboardPage() {
             <SatelliteFilters data={data} onFilterChange={handleFilterChange} />
 
             <div className="mt-4 border rounded-lg overflow-hidden">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">{renderTableHeaders()}</thead>
                   <tbody className="bg-white divide-y divide-gray-200">{renderTableRows()}</tbody>
