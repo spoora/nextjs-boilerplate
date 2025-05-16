@@ -14,6 +14,9 @@ interface SatelliteFiltersProps {
 export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps) {
   const [operatorSearch, setOperatorSearch] = useState("")
   const [orbitType, setOrbitType] = useState("")
+  const [minInclination, setMinInclination] = useState<string>("")
+  const [maxInclination, setMaxInclination] = useState<string>("")
+  const [nameSearch, setNameSearch] = useState("")
 
   // Extract unique orbit types from data
   const orbitTypes = Array.from(new Set(data.map((item) => item["Orbit Type"] || "").filter(Boolean)))
@@ -22,17 +25,41 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
   // Using useCallback to memoize the filter function
   const applyFilters = useCallback(() => {
     const filteredData = data.filter((item) => {
+      const nameMatch =
+        !nameSearch ||
+        (item["Satellite Name"] && item["Satellite Name"].toLowerCase().includes(nameSearch.toLowerCase())) ||
+        (item.name && item.name.toLowerCase().includes(nameSearch.toLowerCase()))
+
       const operatorMatch =
         !operatorSearch ||
-        (item["Satellite Operator"] && item["Satellite Operator"].toLowerCase().includes(operatorSearch.toLowerCase()))
+        (item["Satellite Operator"] &&
+          item["Satellite Operator"].toLowerCase().includes(operatorSearch.toLowerCase())) ||
+        (item.operator && item.operator.toLowerCase().includes(operatorSearch.toLowerCase()))
 
-      const orbitMatch = !orbitType || orbitType === "all" || item["Orbit Type"] === orbitType
+      const orbitMatch =
+        !orbitType || orbitType === "all" || item["Orbit Type"] === orbitType || item.orbit_type === orbitType
 
-      return operatorMatch && orbitMatch
+      // Add inclination filter
+      const inclination =
+        item["Inclination"] !== undefined
+          ? item["Inclination"]
+          : item.inclination !== undefined
+            ? item.inclination
+            : null
+
+      const minInclinationValue = minInclination !== "" ? Number.parseFloat(minInclination) : null
+      const maxInclinationValue = maxInclination !== "" ? Number.parseFloat(maxInclination) : null
+
+      const inclinationMatch =
+        inclination === null ||
+        ((minInclinationValue === null || inclination >= minInclinationValue) &&
+          (maxInclinationValue === null || inclination <= maxInclinationValue))
+
+      return nameMatch && operatorMatch && orbitMatch && inclinationMatch
     })
 
     onFilterChange(filteredData)
-  }, [data, operatorSearch, orbitType, onFilterChange])
+  }, [data, nameSearch, operatorSearch, orbitType, minInclination, maxInclination, onFilterChange])
 
   // Only run the filter when the filter values change
   useEffect(() => {
@@ -41,6 +68,20 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-end">
+      <div className="flex-1 space-y-2">
+        <Label htmlFor="name-search">Satellite Name</Label>
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="name-search"
+            placeholder="Search by satellite name..."
+            className="pl-8"
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
       <div className="flex-1 space-y-2">
         <Label htmlFor="operator-search">Satellite Operator</Label>
         <div className="relative">
@@ -70,6 +111,29 @@ export function SatelliteFilters({ data, onFilterChange }: SatelliteFiltersProps
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      {/* Add inclination range filter */}
+      <div className="w-full md:w-[150px] space-y-2">
+        <Label htmlFor="min-inclination">Min Inclination (°)</Label>
+        <Input
+          id="min-inclination"
+          type="number"
+          placeholder="Min"
+          value={minInclination}
+          onChange={(e) => setMinInclination(e.target.value)}
+        />
+      </div>
+
+      <div className="w-full md:w-[150px] space-y-2">
+        <Label htmlFor="max-inclination">Max Inclination (°)</Label>
+        <Input
+          id="max-inclination"
+          type="number"
+          placeholder="Max"
+          value={maxInclination}
+          onChange={(e) => setMaxInclination(e.target.value)}
+        />
       </div>
     </div>
   )

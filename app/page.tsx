@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { createClient } from "@supabase/supabase-js"
-import { Loader2, Download, RefreshCw } from "lucide-react"
+import { Loader2, RefreshCw } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { SatelliteFilters } from "@/components/satellite-filters"
 import { Button } from "@/components/ui/button"
@@ -151,10 +151,6 @@ export default function DashboardPage() {
             <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
               <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               Refresh
-            </Button>
-            <Button variant="outline" size="sm" onClick={exportToCSV} disabled={loading || filteredData.length === 0}>
-              <Download className="mr-2 h-4 w-4" />
-              Export CSV
             </Button>
           </div>
         </div>
