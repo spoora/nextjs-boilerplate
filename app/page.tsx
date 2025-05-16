@@ -118,19 +118,18 @@ export default function DashboardPage() {
     return (
       <tr>
         {Object.keys(firstItem).map((key) => {
-          // Only show important columns on mobile
-          const isMobileVisible = [
-            "Satellite Name",
-            "name",
-            "Satellite Operator",
-            "operator",
-            "Orbit Type",
-            "orbit_type",
-          ].includes(key)
+          // Special styling for Longitude and Commercial Telecom columns
+          const isSpecialColumn = key === "Longitude" || key === "longitude" || key === "Commercial Telecom"
+
           return (
             <th
               key={key}
-              className={`px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b ${!isMobileVisible ? "hidden sm:table-cell" : ""}`}
+              className={`px-2 py-2 text-left text-xs font-medium uppercase tracking-wider border-b whitespace-nowrap 
+                ${
+                  isSpecialColumn
+                    ? "bg-blue-50 text-blue-700 min-w-[180px] max-w-[250px]"
+                    : "text-gray-500 max-w-[150px] truncate"
+                }`}
             >
               {key}
             </th>
@@ -145,19 +144,14 @@ export default function DashboardPage() {
     return filteredData.map((item, index) => (
       <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
         {Object.entries(item).map(([key, value]: [string, any]) => {
-          // Only show important columns on mobile
-          const isMobileVisible = [
-            "Satellite Name",
-            "name",
-            "Satellite Operator",
-            "operator",
-            "Orbit Type",
-            "orbit_type",
-          ].includes(key)
+          // Special styling for Longitude and Commercial Telecom columns
+          const isSpecialColumn = key === "Longitude" || key === "longitude" || key === "Commercial Telecom"
+
           return (
             <td
               key={key}
-              className={`px-4 py-3 whitespace-nowrap text-sm ${!isMobileVisible ? "hidden sm:table-cell" : ""}`}
+              className={`px-2 py-3 whitespace-nowrap text-sm
+                ${isSpecialColumn ? "bg-blue-50 font-medium min-w-[180px] max-w-[250px]" : ""}`}
             >
               {value !== null ? String(value) : "N/A"}
             </td>
@@ -170,12 +164,14 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <h1 className="text-xl sm:text-2xl font-bold">Satellite Data</h1>
-          <Button variant="outline" size="sm" onClick={fetchData} disabled={loading} className="self-start">
-            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h1 className="text-2xl font-bold">Satellite Data</h1>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {loading ? (
@@ -195,8 +191,8 @@ export default function DashboardPage() {
             <SatelliteFilters data={data} onFilterChange={handleFilterChange} />
 
             <div className="mt-4 border rounded-lg overflow-hidden">
-              <div className="overflow-x-auto -mx-4 sm:mx-0">
-                <table className="min-w-full divide-y divide-gray-200">
+              <div className="overflow-x-auto" style={{ maxWidth: "100%", width: "100%" }}>
+                <table className="w-full divide-y divide-gray-200" style={{ minWidth: "1200px" }}>
                   <thead className="bg-gray-50">{renderTableHeaders()}</thead>
                   <tbody className="bg-white divide-y divide-gray-200">{renderTableRows()}</tbody>
                 </table>

@@ -15,8 +15,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle menu</span>
           </Button>
-          <div className="font-semibold text-lg truncate">Satellite Dashboard</div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="font-semibold text-lg mr-4">Satellite Dashboard</div>
+          <div className="ml-auto flex items-center gap-4">
             <Button variant="outline" size="icon" className="rounded-full">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
@@ -28,7 +28,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </header>
-      <main className="flex-1 p-4 md:p-6 max-w-full md:max-w-7xl mx-auto w-full">{children}</main>
+      <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">{children}</main>
     </div>
   )
 }
